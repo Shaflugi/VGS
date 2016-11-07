@@ -1,0 +1,58 @@
+{
+    "G: Global": [
+	{
+	"C: Compliment": {},
+        "R: Respond": {}, 
+        "Shazbot": "Shazbot.wav" 
+	}
+    ],
+    "A: Attack": [
+        {
+        }
+    ],
+    "D: Defend": [
+        {
+        }
+    ],
+    "R: Repair": [
+        {
+        }
+    ],
+    "B: Base": [
+        {
+        }
+    ],
+    "C: Command": [
+        {
+        }
+    ],
+    "E: Enemy": [
+        {
+        }
+    ],
+    "F: Flag": [
+        {
+        }
+    ],
+    "N: Need": [
+        {
+        }
+    ],
+    "S: Self": [
+        {
+        }
+    ],
+    "T: Target": [
+        {
+        }
+    ],
+    "W: Warning": [
+        {
+        }
+    ],
+    "V: Very Quick": [
+        {
+        }
+    ],
+    "Shazbot": "Shazbot.wav" 
+}
