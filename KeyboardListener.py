@@ -1,3 +1,6 @@
+''' This code was taken from some cool dude on Stackoverflow!
+Source: http://stackoverflow.com/a/16430918 | BoppreH
+'''
 from collections import namedtuple
 
 KeyboardEvent = namedtuple('KeyboardEvent', ['event_type', 'key_code',
