@@ -9,6 +9,7 @@ KeyboardEvent = namedtuple('KeyboardEvent', ['event_type', 'key_code',
 
 handlers = []
 
+
 def listen():
     """
     Calls `handlers` for each keyboard event received. This is a blocking call.
