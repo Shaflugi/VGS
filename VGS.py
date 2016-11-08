@@ -1,4 +1,4 @@
-from KeyboardListener import listen, handlers
+import KeyboardListener
 import Tkinter as tk
 import json
 from Tkinter import StringVar
@@ -12,78 +12,81 @@ g: 71
 s: 83
 """
 
-bg_color = "#004532"
-fg_color = "#00e599"
-vgs_data = {}
-display_data = []
-activation_count = 0
-vgs_window = None
-labels = []
 
-def vgs_handler(event):
-	global activation_count
-	global vgs_window
+class VGS:
 
-	# Ignore key up	
-	if event.event_type == 'key up':
-		return
+    def __init__(self):
+        self._activation_count = 0
+        self._window = None
+        self._labels = []
+        self._vgs_data = {}
+        self._display_data = []
+        self._bg_color = "#004532"
+        self._fg_color = "#00e599"
 
-	key_code = event.key_code
-	
-	if key_code == RIGHT_CTRL:
-		activation_count = activation_count + 1
-	else:
-		activation_count = 0
+        # Read VGS json
+        fp = open("VGS.json", 'r')
+        self._vgs_data = json.load(fp, object_pairs_hook=OrderedDict)
+        fp.close()
 
-	print "Current ctrl count: %i" % activation_count
-	
-	if activation_count >= 2:
-		activation_count = 0
-		print "VGS activated!"
-		spawn_vgs_window()
-		
-	if vgs_window is not None:
-		update_display_data()
+    def begin_listening(self):
+        # Add handler to keyboard listener
+        KeyboardListener.handlers.append(self.keyboard_handler)
+        KeyboardListener.listen()
 
-def update_display_data():
-	for idx,item in enumerate(vgs_data.iterkeys()):
-		display_data[idx] = str(item)
+    def keyboard_handler(self, event):
+        # Ignore key up
+        if event.event_type == 'key up':
+            return
 
-def update_vgs_window():
-	global vgs_data
-	global vgs_window
-	
-	if vgs_window is None:
-		return
-	
-	vgs_window.after(250, update_vgs_window)
-	print "Updating window"
+        key_code = event.key_code
 
-	for idx, _ in enumerate(display_data):
-		labels[idx].configure(text=display_data[idx])
+        if key_code == RIGHT_CTRL:
+            self._activation_count += 1
+        else:
+            self._activation_count = 0
 
-def spawn_vgs_window():
-	global vgs_window
-	vgs_window = tk.Tk()
-	
-	for i in range(0,15):
-		display_data.append(str(""))
-		labels.append(tk.Label(vgs_window, text=display_data[i], fg=fg_color,\
-			bg=bg_color, justify=tk.LEFT, font="Times 12"))
-		labels[i].pack()
+        print "Current ctrl count: %i" % self._activation_count
 
-	vgs_window.geometry("200x375")
-	vgs_window.configure(background=bg_color)
-	vgs_window.title("Shazbot!")
-	vgs_window.after(1000, update_vgs_window)
-	vgs_window.after(500, update_display_data)
-	vgs_window.mainloop()
+        if self._activation_count >= 2:
+            activation_count = 0
+            print "VGS activated!"
+            self.spawn_window()
 
-# Read VGS json
-fp = open("VGS.json", 'r')
-vgs_data = json.load(fp, object_pairs_hook=OrderedDict)
-fp.close()
+        if self._window is not None:
+            self.update_display_data()
 
-# Add handler to keyboard listener
-handlers.append(vgs_handler)
-listen()
+    def update_display_data(self):
+        for idx,item in enumerate(self._vgs_data.iterkeys()):
+            self._display_data[idx] = str(item)
+
+    def update_window(self):
+        if self._window is None:
+            return
+
+        self._window.after(250, self.update_window)
+        print "Updating window"
+
+        for idx, _ in enumerate(self._display_data):
+            self._labels[idx].configure(text=self._display_data[idx])
+
+    def spawn_window(self):
+        self._window = tk.Tk()
+
+        for i in range(0,15):
+            self._display_data.append(str(""))
+            self._labels.append(tk.Label(self._window, text=self._display_data[i],
+                                         fg=self._fg_color, bg=self._bg_color, justify=tk.LEFT,
+                                         font="Times 12"))
+            self._labels[i].pack()
+
+        self._window.geometry("200x375")
+        self._window.configure(background=self._bg_color)
+        self._window.title("Shazbot!")
+        self._window.after(1000, self.update_window)
+        self._window.after(500, self.update_display_data)
+        self._window.mainloop()
+
+if __name__ == '__main__':
+    vgs = VGS()
+    vgs.begin_listening()
